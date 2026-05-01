@@ -1,38 +1,31 @@
 /**
- * LOCALIZA ENG - Motor de Rotas e Grafo
- * Desenvolvido mapeando 100% das salas requeridas e caminhos (linhas vermelhas).
+ * LOCALIZA ENG - Motor de Rotas com Consciência Espacial (Direita/Esquerda)
  */
 
-// 1. ESTRUTURA DO GRAFO (Nós, Salas e Interseções)
-// I_ = Interseção | C_ = Ponto de Corredor
+// 1. ESTRUTURA DO GRAFO (Lista de Adjacência)
 const graph = {
-    // === CORREDORES E INTERSEÇÕES (Linhas Vermelhas) ===
-    "I_TL": { "1100": 1, "C_T1": 4, "C_L1": 4 }, // Top-Left intersection
+    "I_TL": { "1100": 1, "C_T1": 4, "C_L1": 4 }, 
     "C_T1": { "I_TL": 4, "1101": 1, "1102": 1, "1203": 1, "1204": 1, "C_T2": 4 },
     "C_T2": { "C_T1": 4, "1103": 1, "1104": 1, "1205": 1, "1206": 1, "C_T3": 4 },
     "C_T3": { "C_T2": 4, "1105": 1, "1106": 1, "1207": 1, "I_TM": 4 },
-    "I_TM": { "C_T3": 4, "C_T4": 4, "C_C1": 4 }, // Top-Middle intersection
+    "I_TM": { "C_T3": 4, "C_T4": 4, "C_C1": 4 }, 
     "C_T4": { "I_TM": 4, "1107": 1, "1108": 1, "C_T5": 4 },
     "C_T5": { "C_T4": 4, "1109": 1, "1110": 1, "1214": 1, "C_T6": 4 },
     "C_T6": { "C_T5": 4, "1117": 1, "1216": 1 },
-
     "C_L1": { "I_TL": 4, "1200": 1, "I_ML": 4 },
-    "I_ML": { "C_L1": 4, "C_M1": 4, "C_L2": 4 }, // Middle-Left intersection
+    "I_ML": { "C_L1": 4, "C_M1": 4, "C_L2": 4 }, 
     "C_L2": { "I_ML": 4, "1500": 1, "I_BL": 4 },
-    
     "C_M1": { "I_ML": 4, "1400": 1, "I_MM": 4 },
-    
     "C_C1": { "I_TM": 4, "I_MM": 4 },
-    "I_MM": { "C_C1": 4, "C_M1": 4, "1413": 2, "1417": 2, "C_C2": 4 }, // Middle-Middle intersection
+    "I_MM": { "C_C1": 4, "C_M1": 4, "1413": 2, "1417": 2, "C_C2": 4 }, 
     "C_C2": { "I_MM": 4, "I_BM": 4 },
-
-    "I_BL": { "C_L2": 4, "1504": 1, "C_B1": 4 }, // Bottom-Left intersection
+    "I_BL": { "C_L2": 4, "1504": 1, "C_B1": 4 }, 
     "C_B1": { "I_BL": 4, "1505": 1, "1506": 1, "1507": 1, "1605": 1, "1606": 1, "C_B2": 4 },
     "C_B2": { "C_B1": 4, "1508": 1, "1510": 1, "1511": 1, "1607": 1, "I_BM": 4 },
-    "I_BM": { "C_B2": 4, "C_C2": 4, "1608": 1, "1512": 1, "C_B3": 4 }, // Bottom-Middle intersection
+    "I_BM": { "C_B2": 4, "C_C2": 4, "1608": 1, "1512": 1, "C_B3": 4 }, 
     "C_B3": { "I_BM": 4, "1517": 1 },
 
-    // === SALAS (As conexões devem ser bidirecionais no Dijkstra) ===
+    // SALAS
     "1100": { "I_TL": 1 },
     "1101": { "C_T1": 1 }, "1102": { "C_T1": 1 }, "1203": { "C_T1": 1 }, "1204": { "C_T1": 1 },
     "1103": { "C_T2": 1 }, "1104": { "C_T2": 1 }, "1205": { "C_T2": 1 }, "1206": { "C_T2": 1 },
@@ -40,90 +33,65 @@ const graph = {
     "1107": { "C_T4": 1 }, "1108": { "C_T4": 1 },
     "1109": { "C_T5": 1 }, "1110": { "C_T5": 1 }, "1214": { "C_T5": 1 },
     "1117": { "C_T6": 1 }, "1216": { "C_T6": 1 },
-
-    "1200": { "C_L1": 1 },
-    "1500": { "C_L2": 1 },
-    "1504": { "I_BL": 1 },
-    
-    "1400": { "C_M1": 1 },
-    "1413": { "I_MM": 2 }, "1417": { "I_MM": 2 },
-
-    "1505": { "C_B1": 1 }, "1506": { "C_B1": 1 }, "1507": { "C_B1": 1 },
-    "1605": { "C_B1": 1 }, "1606": { "C_B1": 1 },
+    "1200": { "C_L1": 1 }, "1500": { "C_L2": 1 }, "1504": { "I_BL": 1 },
+    "1400": { "C_M1": 1 }, "1413": { "I_MM": 2 }, "1417": { "I_MM": 2 },
+    "1505": { "C_B1": 1 }, "1506": { "C_B1": 1 }, "1507": { "C_B1": 1 }, "1605": { "C_B1": 1 }, "1606": { "C_B1": 1 },
     "1508": { "C_B2": 1 }, "1510": { "C_B2": 1 }, "1511": { "C_B2": 1 }, "1607": { "C_B2": 1 },
     "1608": { "I_BM": 1 }, "1512": { "I_BM": 1 },
-
-    // 🚨 A REGRA DE OURO DA SALA 1519 🚨
-    // 1517 conecta ao corredor e também é a única passagem para 1519.
-    "1517": { "C_B3": 1, "1519": 1 },
-    "1519": { "1517": 1 }
+    "1517": { "C_B3": 1, "1519": 1 }, "1519": { "1517": 1 }
 };
 
-// Dicionário para traduzir os nós do grafo em texto legível para o usuário
+// 2. SISTEMA VIRTUAL DE COORDENADAS (Grid X e Y)
+// Usado matematicamente para descobrir direita/esquerda através do cruzamento de vetores
+const coords = {
+    "I_TL": {x: 10, y: 10}, "C_T1": {x: 20, y: 10}, "C_T2": {x: 30, y: 10}, "C_T3": {x: 40, y: 10}, "I_TM": {x: 50, y: 10}, "C_T4": {x: 60, y: 10}, "C_T5": {x: 70, y: 10}, "C_T6": {x: 80, y: 10},
+    "C_L1": {x: 10, y: 20}, "I_ML": {x: 10, y: 30}, "C_L2": {x: 10, y: 40}, "I_BL": {x: 10, y: 50},
+    "C_M1": {x: 30, y: 30}, "C_C1": {x: 50, y: 20}, "I_MM": {x: 50, y: 30}, "C_C2": {x: 50, y: 40},
+    "C_B1": {x: 20, y: 50}, "C_B2": {x: 40, y: 50}, "I_BM": {x: 50, y: 50}, "C_B3": {x: 60, y: 50},
+    // Posições espaciais das Salas
+    "1100": {x: 10, y: 5}, "1101": {x: 20, y: 5}, "1102": {x: 25, y: 5}, "1203": {x: 20, y: 15}, "1204": {x: 25, y: 15},
+    "1103": {x: 30, y: 5}, "1104": {x: 35, y: 5}, "1205": {x: 30, y: 15}, "1206": {x: 35, y: 15},
+    "1105": {x: 40, y: 5}, "1106": {x: 45, y: 5}, "1207": {x: 40, y: 15},
+    "1107": {x: 60, y: 5}, "1108": {x: 65, y: 5}, "1109": {x: 70, y: 5}, "1110": {x: 75, y: 5}, "1214": {x: 70, y: 15},
+    "1117": {x: 80, y: 5}, "1216": {x: 80, y: 15},
+    "1200": {x: 5, y: 20}, "1500": {x: 5, y: 40}, "1504": {x: 5, y: 50},
+    "1400": {x: 30, y: 35}, "1413": {x: 55, y: 25}, "1417": {x: 55, y: 35},
+    "1505": {x: 20, y: 45}, "1506": {x: 25, y: 45}, "1507": {x: 28, y: 45}, "1605": {x: 20, y: 55}, "1606": {x: 25, y: 55},
+    "1508": {x: 40, y: 45}, "1510": {x: 43, y: 45}, "1511": {x: 46, y: 45}, "1607": {x: 40, y: 55},
+    "1512": {x: 50, y: 45}, "1608": {x: 50, y: 55},
+    "1517": {x: 60, y: 45}, "1519": {x: 70, y: 45}
+};
+
 const namesMap = {
-    "I_TL": "Interseção Noroeste (Bloco 1100/1200)",
-    "C_T1": "Corredor Norte (Setor A)",
-    "C_T2": "Corredor Norte (Setor B)",
-    "C_T3": "Corredor Norte (Setor C)",
-    "I_TM": "Interseção Principal de Entrada",
-    "C_T4": "Corredor Nordeste (Banheiros)",
-    "C_T5": "Corredor Nordeste (Setor A)",
-    "C_T6": "Final do Corredor Nordeste",
-    "C_L1": "Corredor Oeste (Bloco 1200)",
-    "I_ML": "Interseção Centro-Oeste",
-    "C_L2": "Corredor Oeste (Bloco 1500)",
-    "C_M1": "Corredor Central (Bloco 1400)",
-    "C_C1": "Corredor de Interligação Norte-Centro",
-    "I_MM": "Interseção Central do Pátio",
-    "C_C2": "Corredor de Interligação Centro-Sul",
-    "I_BL": "Interseção Sudoeste",
-    "C_B1": "Corredor Sul (Setor A)",
-    "C_B2": "Corredor Sul (Setor B)",
-    "I_BM": "Interseção Principal Sul",
-    "C_B3": "Acesso Leste (Bloco 1500)"
+    "I_TL": "Interseção Noroeste", "C_T1": "Corredor Norte (A)", "C_T2": "Corredor Norte (B)", "C_T3": "Corredor Norte (C)",
+    "I_TM": "Interseção Principal de Entrada", "C_T4": "Corredor Nordeste", "C_T5": "Corredor Nordeste", "C_T6": "Final do Corredor Nordeste",
+    "C_L1": "Corredor Oeste", "I_ML": "Interseção Centro-Oeste", "C_L2": "Corredor Oeste",
+    "C_M1": "Corredor Central", "C_C1": "Corredor Norte-Centro", "I_MM": "Interseção Central do Pátio", "C_C2": "Corredor Centro-Sul",
+    "I_BL": "Interseção Sudoeste", "C_B1": "Corredor Sul", "C_B2": "Corredor Sul",
+    "I_BM": "Interseção Principal Sul", "C_B3": "Acesso Leste"
 };
 
-// 2. INICIALIZAÇÃO DA INTERFACE (Popula selects ignorando nós de corredor)
+// 3. INIT DA INTERFACE
 document.addEventListener("DOMContentLoaded", () => {
     const originSelect = document.getElementById("origin");
     const destSelect = document.getElementById("destination");
-
-    // Filtra apenas chaves que são números (salas)
     const rooms = Object.keys(graph).filter(node => !isNaN(node)).sort();
 
     rooms.forEach(room => {
-        const opt1 = document.createElement("option");
-        opt1.value = room;
-        opt1.textContent = `Sala ${room}`;
-        originSelect.appendChild(opt1);
-
-        const opt2 = document.createElement("option");
-        opt2.value = room;
-        opt2.textContent = `Sala ${room}`;
-        destSelect.appendChild(opt2);
+        originSelect.appendChild(new Option(`Sala ${room}`, room));
+        destSelect.appendChild(new Option(`Sala ${room}`, room));
     });
 });
 
-// 3. ALGORITMO DE DIJKSTRA (Menor Caminho)
+// 4. DIJKSTRA
 function dijkstra(graph, startNode, endNode) {
-    let distances = {};
-    let prev = {};
-    let pq = []; // Fila de prioridade simples
-
-    // Inicializa distâncias
-    for (let node in graph) {
-        distances[node] = Infinity;
-        prev[node] = null;
-    }
-    distances[startNode] = 0;
-    pq.push({ node: startNode, dist: 0 });
+    let distances = {}; let prev = {}; let pq = [];
+    for (let node in graph) { distances[node] = Infinity; prev[node] = null; }
+    distances[startNode] = 0; pq.push({ node: startNode, dist: 0 });
 
     while (pq.length > 0) {
-        // Ordena para pegar o menor (Simula Priority Queue)
         pq.sort((a, b) => a.dist - b.dist);
-        let curr = pq.shift();
-        let currNode = curr.node;
-
+        let curr = pq.shift(); let currNode = curr.node;
         if (currNode === endNode) break;
 
         for (let neighbor in graph[currNode]) {
@@ -135,60 +103,28 @@ function dijkstra(graph, startNode, endNode) {
             }
         }
     }
-
-    // Reconstrói o caminho
-    let path = [];
-    let u = endNode;
+    let path = []; let u = endNode;
     if (prev[u] !== null || u === startNode) {
-        while (u !== null) {
-            path.unshift(u);
-            u = prev[u];
-        }
+        while (u !== null) { path.unshift(u); u = prev[u]; }
     }
     return path;
 }
 
-// 4. TRADUTOR DE ROTAS (Gera Instruções Humanas)
-function generateInstructions(path) {
-    const list = document.getElementById("instructions-list");
-    list.innerHTML = ""; // Limpa anterior
+// 5. MOTOR DE GEOMETRIA (Produto Vetorial)
+function getTurnDirection(nodeA, nodeB, nodeC) {
+    let a = coords[nodeA], b = coords[nodeB], c = coords[nodeC];
+    if (!a || !b || !c) return null;
 
-    if (path.length === 0) {
-        list.innerHTML = "<li>Não foi possível encontrar um caminho.</li>";
-        return;
-    }
+    // Calcula os vetores (Direção)
+    let AB = { x: b.x - a.x, y: b.y - a.y };
+    let BC = { x: c.x - b.x, y: c.y - b.y };
+    
+    // Produto vetorial em um plano 2D (tela do computador onde Y desce)
+    let crossProduct = (AB.x * BC.y) - (AB.y * BC.x);
 
-    if (path.length === 1) {
-        list.innerHTML = "<li>Você já está no seu destino.</li>";
-        return;
-    }
-
-    // Passo 1: Saída
-    addListItem(`Saia da Sala ${path[0]} e entre no corredor.`);
-
-    // Passo 2: Interseções e Corredores do meio
-    for (let i = 1; i < path.length - 1; i++) {
-        let node = path[i];
-        let nextNode = path[i+1];
-
-        // 🚨 Validação da Regra de Ouro da sala 1519
-        if (node === "1517" && nextNode === "1519") {
-            addListItem(`<strong>Atenção:</strong> Entre e atravesse a Sala 1517 para conseguir acessar a Sala 1519.`, 'golden-rule');
-            continue; // Pula a instrução normal para esse nó
-        }
-
-        // Se for um nó de corredor/interseção, traduz.
-        if (isNaN(node)) {
-            let friendlyName = namesMap[node] || "Corredor";
-            // Para não ficar repetitivo, só avisa se for uma interseção principal
-            if (node.startsWith("I_")) {
-                addListItem(`Siga em frente até a ${friendlyName}.`);
-            }
-        }
-    }
-
-    // Passo 3: Chegada
-    addListItem(`Você chegou ao seu destino: <strong>Sala ${path[path.length - 1]}</strong>! 🎉`);
+    if (crossProduct > 0) return "direita";
+    if (crossProduct < 0) return "esquerda";
+    return "em frente";
 }
 
 function addListItem(text, className = '') {
@@ -199,7 +135,57 @@ function addListItem(text, className = '') {
     list.appendChild(li);
 }
 
-// 5. EVENT LISTENER DO FORMULÁRIO
+// 6. GERADOR DE INSTRUÇÕES (Tradutor Humanizado)
+function generateInstructions(path) {
+    const list = document.getElementById("instructions-list");
+    list.innerHTML = "";
+
+    if (path.length === 0) return addListItem("<li>Não foi possível encontrar um caminho.</li>");
+    if (path.length === 1) return addListItem("<li>Você já está no seu destino.</li>");
+
+    for (let i = 0; i < path.length - 1; i++) {
+        let node = path[i];
+        let nextNode = path[i+1];
+        let prevNode = i > 0 ? path[i-1] : null;
+
+        // Regra de Ouro (Salas 1517 / 1519)
+        if (node === "1517" && nextNode === "1519") {
+            addListItem(`<strong>Atenção:</strong> Atravesse a Sala 1517 para conseguir acessar a Sala 1519.`, 'golden-rule');
+            continue;
+        }
+        if (prevNode === "1517" && node === "1519") continue;
+
+        // Primeiro Passo (Saída da sala)
+        if (i === 0) {
+            let turnText = "siga em frente";
+            if (path.length > 2) {
+                let dir = getTurnDirection(node, nextNode, path[2]);
+                if (dir === "direita" || dir === "esquerda") turnText = `vire à <strong>${dir}</strong>`;
+            }
+            addListItem(`Saia da Sala ${node} e ${turnText} no corredor.`);
+        } 
+        // Passos Intermediários
+        else if (i < path.length - 1 && prevNode) {
+            let dir = getTurnDirection(prevNode, node, nextNode);
+
+            if (dir === "direita" || dir === "esquerda") {
+                // Descobrindo se virou para andar no corredor ou para entrar na sala final
+                if (!isNaN(nextNode)) {
+                    addListItem(`A Sala ${nextNode} estará à sua <strong>${dir}</strong>. Entre nela.`);
+                } else {
+                    let friendlyName = namesMap[node] || "corredor";
+                    addListItem(`Chegando na ${friendlyName}, vire à <strong>${dir}</strong>.`);
+                }
+            } else if (dir === "em frente" && node.startsWith("I_")) {
+                 let friendlyName = namesMap[node] || "interseção";
+                 addListItem(`Siga em frente passando pela ${friendlyName}.`);
+            }
+        }
+    }
+    addListItem(`Você chegou ao seu destino: <strong>Sala ${path[path.length - 1]}</strong>! 🎉`);
+}
+
+// 7. EVENTOS
 document.getElementById("route-form").addEventListener("submit", (e) => {
     e.preventDefault();
     const origin = document.getElementById("origin").value;
@@ -210,20 +196,14 @@ document.getElementById("route-form").addEventListener("submit", (e) => {
         return;
     }
 
-    // Roda o Dijkstra
     const shortestPath = dijkstra(graph, origin, dest);
-    
-    // Mostra o card e gera texto
     const resultCard = document.getElementById("result-card");
-    resultCard.classList.remove("hidden");
     
-    // Re-trigger a animação do card
+    resultCard.classList.remove("hidden");
     resultCard.style.animation = 'none';
-    resultCard.offsetHeight; // trigger reflow
+    resultCard.offsetHeight; 
     resultCard.style.animation = null;
 
     generateInstructions(shortestPath);
-    
-    // Scroll suave para o resultado
     resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
