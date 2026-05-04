@@ -268,3 +268,26 @@ select:focus {
         transform: translateY(0);
     }
 }
+/* Configuração do Mapa Vetorial */
+#campus-map {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Estilo e Animação da Linha Vermelha */
+.animated-route {
+    fill: none;
+    stroke: #E11D48; /* Vermelho chamativo e moderno */
+    stroke-width: 6; /* Espessura da linha (ajuste se precisar) */
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 3000;
+    stroke-dashoffset: 3000;
+    animation: drawLine 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    filter: drop-shadow(0px 4px 8px rgba(225, 29, 72, 0.4)); /* Sombra brilhante */
+}
+
+@keyframes drawLine {
+    to { stroke-dashoffset: 0; }
+}
