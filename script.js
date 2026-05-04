@@ -112,15 +112,17 @@ function dijkstra(graph, startNode, endNode) {
 // 5. MOTOR DE GEOMETRIA (Produto Vetorial)
 function getTurnDirection(nodeA, nodeB, nodeC) {
     let a = coords[nodeA], b = coords[nodeB], c = coords[nodeC];
-    if (!a || !b || !c) return null;
+    if (!a || !b || !c) return "em frente";
 
-    let AB = { x: b.x - a.x, y: b.y - a.y };
-    let BC = { x: c.x - b.x, y: c.y - b.y };
+    let angle1 = Math.atan2(b.y - a.y, b.x - a.x);
+    let angle2 = Math.atan2(c.y - b.y, c.x - b.x);
+    let diff = angle2 - angle1;
     
-    let crossProduct = (AB.x * BC.y) - (AB.y * BC.x);
-
-    if (crossProduct > 0) return "direita";
-    if (crossProduct < 0) return "esquerda";
+    while (diff > Math.PI) diff -= 2 * Math.PI;
+    while (diff < -Math.PI) diff += 2 * Math.PI;
+    
+    if (diff > 0.1) return "direita";
+    if (diff < -0.1) return "esquerda";
     return "em frente";
 }
 
@@ -138,7 +140,7 @@ function generateInstructions(path) {
     list.innerHTML = "";
 
     if (path.length === 0) return addListItem("<li>Não foi possível encontrar um caminho.</li>");
-    if (path.length === 1) return addListItem("<li>Você já está no seu destino.</li>");
+    if (path.length === 1) return addListItem("<li>Você já está no destino.</li>");
 
     for (let i = 0; i < path.length - 1; i++) {
         let node = path[i];
@@ -146,32 +148,31 @@ function generateInstructions(path) {
         let prevNode = i > 0 ? path[i-1] : null;
 
         if (node === "1517" && nextNode === "1519") {
-            addListItem(`<strong>Atenção:</strong> Atravesse a Sala 1517 para conseguir acessar a Sala 1519.`, 'golden-rule');
+            addListItem(`<strong>Atenção:</strong> Atravesse a Sala 1517 para acessar a 1519.`, 'golden-rule');
             continue;
         }
         if (prevNode === "1517" && node === "1519") continue;
 
+        // Saindo da Sala
         if (i === 0) {
-            let turnText = "siga em frente";
-            if (path.length > 2) {
-                let dir = getTurnDirection(node, nextNode, path[2]);
-                if (dir === "direita" || dir === "esquerda") turnText = `vire à <strong>${dir}</strong>`;
-            }
+            let dir = path.length > 2 ? getTurnDirection(node, nextNode, path[2]) : "em frente";
+            let turnText = (dir === "em frente") ? "siga em frente" : `vire à <strong>${dir}</strong>`;
             addListItem(`Saia da Sala ${node} e ${turnText} no corredor.`);
-        } 
-        else if (i < path.length - 1 && prevNode) {
-            let dir = getTurnDirection(prevNode, node, nextNode);
+            continue;
+        }
 
-            if (dir === "direita" || dir === "esquerda") {
+        // Evita instrução duplicada logo após sair da sala
+        if (i === 1 && !isNaN(prevNode)) continue;
+
+        if (prevNode) {
+            let dir = getTurnDirection(prevNode, node, nextNode);
+            if (dir !== "em frente") {
                 if (!isNaN(nextNode)) {
                     addListItem(`A Sala ${nextNode} estará à sua <strong>${dir}</strong>. Entre nela.`);
                 } else {
                     let friendlyName = namesMap[node] || "corredor";
                     addListItem(`Chegando na ${friendlyName}, vire à <strong>${dir}</strong>.`);
                 }
-            } else if (dir === "em frente" && node.startsWith("I_")) {
-                 let friendlyName = namesMap[node] || "interseção";
-                 addListItem(`Siga em frente passando pela ${friendlyName}.`);
             }
         }
     }
