@@ -42,10 +42,7 @@ const graph = {
 };
 
 // 2. SISTEMA VIRTUAL DE COORDENADAS (Grid X e Y)
-// AVISO: Estas coordenadas foram multiplicadas por 10 para o teste visual.
-// Depois você ajustará com os números finais copiados do Inkscape!
 const coords = {
-<<<<<<< HEAD
     "I_TL": {x: 290, y: 391}, "C_T1": {x: 433, y: 381}, "C_T2": {x: 759, y: 381}, "C_T3": {x: 843, y: 381}, "I_TM": {x: 1166, y: 381}, "C_T4": {x: 1386, y: 381}, "C_T5": {x: 1733, y: 381}, "C_T6": {x: 1873, y: 381},
     "C_L1": {x: 293, y: 521}, "I_ML": {x: 284, y: 936}, "C_L2": {x: 284, y: 953}, "I_BL": {x: 284, y: 1466},
     "C_M1": {x: 577, y: 932}, "C_C1": {x: 1166, y: 66}, "I_MM": {x: 1166, y: 991}, "C_C2": {x: 1166, y: 1364},
@@ -62,24 +59,6 @@ const coords = {
     "1508": {x: 924, y: 1580}, "1510": {x: 1009, y: 1580}, "1511": {x: 1084, y: 1580},  "1515": {x: 1412, y: 1596}, "1607": {x: 1018, y: 1682},
     "1512": {x: 1194, y: 1467}, "1608": {x: 1382, y: 1685},
     "1517": {x: 1533, y: 1649}, "1519": {x: 1704, y: 1627}
-=======
-    "I_TL": {x: 100, y: 100}, "C_T1": {x: 200, y: 100}, "C_T2": {x: 300, y: 100}, "C_T3": {x: 400, y: 100}, "I_TM": {x: 500, y: 100}, "C_T4": {x: 600, y: 100}, "C_T5": {x: 700, y: 100}, "C_T6": {x: 800, y: 100},
-    "C_L1": {x: 100, y: 200}, "I_ML": {x: 100, y: 300}, "C_L2": {x: 100, y: 400}, "I_BL": {x: 100, y: 500},
-    "C_M1": {x: 300, y: 300}, "C_C1": {x: 500, y: 200}, "I_MM": {x: 500, y: 300}, "C_C2": {x: 500, y: 400},
-    "C_B1": {x: 200, y: 500}, "C_B2": {x: 400, y: 500}, "I_BM": {x: 500, y: 500}, "C_B3": {x: 600, y: 500},
-    // Posições espaciais das Salas
-    "1100": {x: 100, y: 50}, "1101": {x: 200, y: 50}, "1102": {x: 250, y: 50}, "1203": {x: 200, y: 150}, "1204": {x: 250, y: 150},
-    "1103": {x: 300, y: 50}, "1104": {x: 350, y: 50}, "1205": {x: 300, y: 150}, "1206": {x: 350, y: 150},
-    "1105": {x: 400, y: 50}, "1106": {x: 450, y: 50}, "1207": {x: 400, y: 150},
-    "1107": {x: 600, y: 50}, "1108": {x: 650, y: 50}, "1109": {x: 700, y: 50}, "1110": {x: 750, y: 50}, "1214": {x: 700, y: 150},
-    "1117": {x: 800, y: 50}, "1216": {x: 800, y: 150},
-    "1200": {x: 50, y: 200}, "1500": {x: 50, y: 400}, "1504": {x: 50, y: 500},
-    "1400": {x: 300, y: 350}, "1413": {x: 550, y: 250}, "1417": {x: 550, y: 350},
-    "1505": {x: 200, y: 450}, "1506": {x: 250, y: 450}, "1507": {x: 280, y: 450}, "1605": {x: 200, y: 550}, "1606": {x: 250, y: 550},
-    "1508": {x: 400, y: 450}, "1510": {x: 430, y: 450}, "1511": {x: 460, y: 450}, "1607": {x: 400, y: 550},
-    "1512": {x: 500, y: 450}, "1608": {x: 500, y: 550},
-    "1517": {x: 600, y: 450}, "1519": {x: 700, y: 450}
->>>>>>> 4f4618ac9a4129194a5dc609cc325cda8a369b31
 };
 
 const namesMap = {
@@ -203,7 +182,6 @@ function generateInstructions(path) {
 function drawRouteOnMap(path) {
     const routeLayer = document.getElementById("route-layer");
     
-    // Verificação de segurança caso o <g id="route-layer"> não exista no HTML
     if (!routeLayer) {
         console.error("ERRO: A tag <g id='route-layer'></g> não foi encontrada no seu HTML antes do </svg>.");
         return;
@@ -252,11 +230,10 @@ document.getElementById("route-form").addEventListener("submit", (e) => {
     generateInstructions(shortestPath);
     drawRouteOnMap(shortestPath); 
     resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}); // <-- FECHAMENTO CORRETO DO EVENTO DO BOTÃO
+});
 
-// 🛠️ FERRAMENTA DE MAPEAMENTO (À PROVA DE FALHAS)
+// 🛠️ FERRAMENTA DE MAPEAMENTO (À Prova de Falhas)
 window.addEventListener("load", () => {
-    // Procura o SVG direto, com ou sem ID
     const mapaSvg = document.getElementById("campus-map") || document.querySelector("svg");
     
     if (mapaSvg) {
@@ -276,9 +253,5 @@ window.addEventListener("load", () => {
         console.log("✅ Modo Hacker ativado! Clique no mapa.");
     } else {
         alert("❌ Erro: O SVG do mapa não foi encontrado no HTML.");
-<<<<<<< HEAD
-    }
-=======
     }
 });
->>>>>>> 4f4618ac9a4129194a5dc609cc325cda8a369b31
