@@ -1034,12 +1034,13 @@
      inkscape:label="delimitador"><path
            style="fill:none;stroke:#000000;stroke-opacity:1;stroke-width:3;stroke-dasharray:none"
            d="m 109.12616,202.92981 0.16752,1580.74309 1733.35532,0.1664 v -25.488 l 190.3863,-0.7474 8.5956,-1553.55293 z"
-           id="path1" /> <!-- Fechei o path aqui corretamente -->
-      </g> <!-- Fecha o grupo do Inkscape -->
-      
-      <g id="route-layer"></g> <!-- AGORA O JAVASCRIPT CONSEGUE VER ISSO! -->
-      
-   </svg> <!-
+           id="path1" />
+      </g> <!-- Fecha o layer 5 -->
+
+      <!-- A CAMADA DA ROTA FICA AQUI, FORA DE TODOS OS GRUPOS -->
+      <g id="route-layer"></g> 
+
+   </svg> <!-- Fecha o mapa -->
             </div>
         </section>
 
@@ -1076,8 +1077,7 @@
 
             <div id="result-card" class="card result-card hidden">
                 <h3>Sua Rota</h3>
-                <ul id="instructions-list">
-                    </ul>
+                <ul id="instructions-list"></ul>
             </div>
         </section>
     </main>
