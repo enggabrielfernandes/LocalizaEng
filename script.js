@@ -233,7 +233,9 @@ document.getElementById("route-form").addEventListener("submit", (e) => {
     generateInstructions(shortestPath);
     drawRouteOnMap(shortestPath); 
     resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    // 🛠️ FERRAMENTA DE MAPEAMENTO (Apague depois de terminar)
+}); // <-- FECHAMENTO CORRETO DO EVENTO DO BOTÃO
+
+// 🛠️ FERRAMENTA DE MAPEAMENTO (Apague depois de terminar)
 document.getElementById("campus-map").addEventListener("click", function(e) {
     const svg = this;
     const pt = svg.createSVGPoint();
@@ -245,6 +247,5 @@ document.getElementById("campus-map").addEventListener("click", function(e) {
     const y = Math.round(svgP.y);
     
     console.log(`{x: ${x}, y: ${y}},`);
-    alert(`Copiado! X: ${x} | Y: ${y}`); // Mostra na tela para facilitar
+    alert(`X: ${x} | Y: ${y}`); // Mostra na tela para facilitar
 });
-
