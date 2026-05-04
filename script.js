@@ -235,17 +235,27 @@ document.getElementById("route-form").addEventListener("submit", (e) => {
     resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }); // <-- FECHAMENTO CORRETO DO EVENTO DO BOTÃO
 
-// 🛠️ FERRAMENTA DE MAPEAMENTO (Apague depois de terminar)
-document.getElementById("campus-map").addEventListener("click", function(e) {
-    const svg = this;
-    const pt = svg.createSVGPoint();
-    pt.x = e.clientX;
-    pt.y = e.clientY;
-    const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+// 🛠️ FERRAMENTA DE MAPEAMENTO (À PROVA DE FALHAS)
+window.addEventListener("load", () => {
+    // Procura o SVG direto, com ou sem ID
+    const mapaSvg = document.getElementById("campus-map") || document.querySelector("svg");
     
-    const x = Math.round(svgP.x);
-    const y = Math.round(svgP.y);
-    
-    console.log(`{x: ${x}, y: ${y}},`);
-    alert(`X: ${x} | Y: ${y}`); // Mostra na tela para facilitar
+    if (mapaSvg) {
+        mapaSvg.addEventListener("click", function(e) {
+            const svg = this;
+            const pt = svg.createSVGPoint();
+            pt.x = e.clientX;
+            pt.y = e.clientY;
+            const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+            
+            const x = Math.round(svgP.x);
+            const y = Math.round(svgP.y);
+            
+            console.log(`{x: ${x}, y: ${y}},`);
+            alert(`X: ${x} | Y: ${y}`);
+        });
+        console.log("✅ Modo Hacker ativado! Clique no mapa.");
+    } else {
+        alert("❌ Erro: O SVG do mapa não foi encontrado no HTML.");
+    }
 });
