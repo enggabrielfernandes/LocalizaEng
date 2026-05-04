@@ -234,3 +234,17 @@ document.getElementById("route-form").addEventListener("submit", (e) => {
     drawRouteOnMap(shortestPath); 
     resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
+// 🛠️ FERRAMENTA DE MAPEAMENTO (Apague depois de terminar)
+document.getElementById("campus-map").addEventListener("click", function(e) {
+    const svg = this;
+    const pt = svg.createSVGPoint();
+    pt.x = e.clientX;
+    pt.y = e.clientY;
+    const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+    
+    const x = Math.round(svgP.x);
+    const y = Math.round(svgP.y);
+    
+    console.log(`{x: ${x}, y: ${y}},`);
+    alert(`Copiado! X: ${x} | Y: ${y}`); // Mostra na tela para facilitar
+});
