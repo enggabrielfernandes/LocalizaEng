@@ -42,7 +42,7 @@ const graph = {
 };
 
 // 2. SISTEMA VIRTUAL DE COORDENADAS (Grid X e Y)
-// Usado matematicamente para descobrir direita/esquerda através do cruzamento de vetores
+// Lembre-se: Você precisará atualizar estes números com as coordenadas reais que você pegar no Inkscape!
 const coords = {
     "I_TL": {x: 10, y: 10}, "C_T1": {x: 20, y: 10}, "C_T2": {x: 30, y: 10}, "C_T3": {x: 40, y: 10}, "I_TM": {x: 50, y: 10}, "C_T4": {x: 60, y: 10}, "C_T5": {x: 70, y: 10}, "C_T6": {x: 80, y: 10},
     "C_L1": {x: 10, y: 20}, "I_ML": {x: 10, y: 30}, "C_L2": {x: 10, y: 40}, "I_BL": {x: 10, y: 50},
@@ -185,6 +185,35 @@ function generateInstructions(path) {
     addListItem(`Você chegou ao seu destino: <strong>Sala ${path[path.length - 1]}</strong>! 🎉`);
 }
 
+// 8. DESENHADOR DE ROTAS NO SVG
+function drawRouteOnMap(path) {
+    const routeLayer = document.getElementById("route-layer");
+    routeLayer.innerHTML = ""; // Limpa a rota anterior
+
+    if (path.length < 2) return;
+
+    // Constrói o atributo 'd' (direções) do SVG Path
+    let pathData = "M "; // M = Move to (Ponto de início)
+    
+    path.forEach((node, index) => {
+        const point = coords[node];
+        if (point) {
+            // Adiciona as coordenadas X e Y
+            pathData += `${point.x} ${point.y} `;
+            // Se não for o último ponto, adiciona um L (Line to)
+            if (index < path.length - 1) pathData += "L ";
+        }
+    });
+
+    // Cria a linha vetorial
+    const svgPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    svgPath.setAttribute("d", pathData);
+    svgPath.setAttribute("class", "animated-route");
+
+    // Injeta a linha no mapa
+    routeLayer.appendChild(svgPath);
+}
+
 // 7. EVENTOS
 document.getElementById("route-form").addEventListener("submit", (e) => {
     e.preventDefault();
@@ -205,5 +234,6 @@ document.getElementById("route-form").addEventListener("submit", (e) => {
     resultCard.style.animation = null;
 
     generateInstructions(shortestPath);
+    drawRouteOnMap(shortestPath); // <-- AQUI FOI ADICIONADA A CHAMADA DO SVG
     resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
