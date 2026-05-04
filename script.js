@@ -110,6 +110,7 @@ function dijkstra(graph, startNode, endNode) {
 }
 
 // 5. MOTOR DE GEOMETRIA (Produto Vetorial)
+// 5. MOTOR DE GEOMETRIA (Com filtro de sensibilidade para ziguezagues)
 function getTurnDirection(nodeA, nodeB, nodeC) {
     let a = coords[nodeA], b = coords[nodeB], c = coords[nodeC];
     if (!a || !b || !c) return "em frente";
@@ -121,11 +122,12 @@ function getTurnDirection(nodeA, nodeB, nodeC) {
     while (diff > Math.PI) diff -= 2 * Math.PI;
     while (diff < -Math.PI) diff += 2 * Math.PI;
     
-    if (diff > 0.1) return "direita";
-    if (diff < -0.1) return "esquerda";
+    // Aumentamos a tolerância para 0.8 radianos (~45 graus)
+    // Isso "engole" as linhas tortas e só avisa de curvas reais!
+    if (diff > 0.8) return "direita";
+    if (diff < -0.8) return "esquerda";
     return "em frente";
 }
-
 function addListItem(text, className = '') {
     const list = document.getElementById("instructions-list");
     const li = document.createElement("li");
