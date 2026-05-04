@@ -42,71 +42,23 @@ const graph = {
 };
 
 // 2. SISTEMA VIRTUAL DE COORDENADAS (Grid X e Y)
-// Corrigido com base nas posições reais dos elementos SVG do mapa
 const coords = {
-    // Nós de interseção e corredores — posicionados nos eixos dos corredores reais
-    "I_TL":  {x: 215,  y: 384},  // Interseção Noroeste (corredor topo x corredor esquerdo)
-    "C_T1":  {x: 435,  y: 384},  // Corredor Norte (A) — entre salas 1101/1102 e 1203/1204
-    "C_T2":  {x: 680,  y: 384},  // Corredor Norte (B) — entre salas 1103/1104 e 1205/1206
-    "C_T3":  {x: 920,  y: 384},  // Corredor Norte (C) — entre salas 1105/1106 e 1207
-    "I_TM":  {x: 1189, y: 384},  // Interseção Principal de Entrada
-    "C_T4":  {x: 1460, y: 384},  // Corredor Nordeste — entre salas 1107/1108
-    "C_T5":  {x: 1653, y: 384},  // Corredor Nordeste — entre salas 1109/1110/1214
-    "C_T6":  {x: 1900, y: 412},  // Final do Corredor Nordeste — salas 1117/1216
-    "C_L1":  {x: 215,  y: 521},  // Corredor Oeste (trecho 1200)
-    "I_ML":  {x: 215,  y: 858},  // Interseção Centro-Oeste
-    "C_L2":  {x: 215,  y: 1317}, // Corredor Oeste (trecho 1500)
-    "I_BL":  {x: 215,  y: 1646}, // Interseção Sudoeste
-    "C_M1":  {x: 450,  y: 858},  // Corredor Central (acesso 1400)
-    "C_C1":  {x: 1189, y: 248},  // Corredor Norte-Centro (entrada principal)
-    "I_MM":  {x: 1189, y: 991},  // Interseção Central do Pátio
-    "C_C2":  {x: 1189, y: 1363}, // Corredor Centro-Sul
-    "C_B1":  {x: 600,  y: 1646}, // Corredor Sul (trecho 1505-1507/1605-1606)
-    "C_B2":  {x: 900,  y: 1646}, // Corredor Sul (trecho 1508-1511/1607)
-    "I_BM":  {x: 1189, y: 1646}, // Interseção Principal Sul
-    "C_B3":  {x: 1462, y: 1646}, // Acesso Leste (1517)
-
-    // Salas — centro geométrico calculado a partir dos retângulos do SVG
-    "1100": {x: 190,  y: 302},
-    "1101": {x: 353,  y: 302},
-    "1102": {x: 516,  y: 302},
-    "1103": {x: 679,  y: 302},
-    "1104": {x: 787,  y: 302},
-    "1105": {x: 853,  y: 302},
-    "1106": {x: 1015, y: 302},
-    "1107": {x: 1437, y: 301},
-    "1108": {x: 1546, y: 301},
-    "1109": {x: 1653, y: 302},
-    "1110": {x: 1815, y: 302},
-    "1117": {x: 1947, y: 330},
-    "1200": {x: 189,  y: 521},
-    "1203": {x: 393,  y: 494},
-    "1204": {x: 515,  y: 494},
-    "1205": {x: 638,  y: 494},
-    "1206": {x: 761,  y: 494},
-    "1207": {x: 976,  y: 494},
-    "1211": {x: 1438, y: 494},
-    "1212": {x: 1585, y: 494},
-    "1214": {x: 1775, y: 494},
-    "1216": {x: 1775, y: 615},
-    "1400": {x: 507,  y: 1097},
-    "1413": {x: 1570, y: 945},
-    "1417": {x: 1718, y: 1107},
-    "1500": {x: 190,  y: 1317},
-    "1504": {x: 326,  y: 1758},
-    "1505": {x: 473,  y: 1536},
-    "1506": {x: 611,  y: 1536},
-    "1507": {x: 692,  y: 1536},
-    "1508": {x: 799,  y: 1536},
-    "1510": {x: 922,  y: 1536},
-    "1511": {x: 1004, y: 1536},
-    "1512": {x: 1218, y: 1473},
-    "1517": {x: 1598, y: 1620},
-    "1519": {x: 1731, y: 1639},
-    "1605": {x: 623,  y: 1729},
-    "1606": {x: 761,  y: 1729},
-    "1607": {x: 895,  y: 1729},
-    "1608": {x: 1462, y: 1729},
+    "I_TL": {x: 290, y: 391}, "C_T1": {x: 433, y: 381}, "C_T2": {x: 759, y: 381}, "C_T3": {x: 843, y: 381}, "I_TM": {x: 1166, y: 381}, "C_T4": {x: 1386, y: 381}, "C_T5": {x: 1733, y: 381}, "C_T6": {x: 1873, y: 381},
+    "C_L1": {x: 293, y: 521}, "I_ML": {x: 284, y: 936}, "C_L2": {x: 284, y: 953}, "I_BL": {x: 284, y: 1466},
+    "C_M1": {x: 577, y: 932}, "C_C1": {x: 1166, y: 66}, "I_MM": {x: 1166, y: 991}, "C_C2": {x: 1166, y: 1364},
+    "C_B1": {x: 708, y: 1648}, "C_B2": {x: 962, y: 1648}, "I_BM": {x: 1161, y: 1648}, "C_B3": {x: 1479, y: 1648},
+    // Posições espaciais das Salas
+    "1100": {x: 185, y: 320}, "1101": {x: 345, y: 320}, "1102": {x: 513, y: 320}, "1203": {x: 397, y: 436}, "1204": {x: 392, y: 436},
+    "1103": {x: 681, y: 320}, "1104": {x: 783, y: 320}, "1205": {x: 625, y: 436}, "1206": {x: 764, y: 436},
+    "1105": {x: 861, y: 320}, "1106": {x: 1018, y: 320}, "1207": {x: 965, y: 436}, 
+    "1107": {x: 1437, y: 320}, "1108": {x: 1536, y: 320}, "1109": {x: 1649, y: 320}, "1110": {x: 1815, y: 320}, "1214": {x: 1779, y: 436},
+    "1117": {x: 1900, y: 383}, "1212": {x: 1583, y: 436}, "1211": {x: 1451, y: 436}, "1216": {x: 800, y: 550},
+    "1200": {x: 254, y: 516}, "1500": {x: 254, y: 1321}, "1504": {x: 521, y: 1646},
+    "1400": {x: 676, y: 1026}, "1413": {x: 1371, y: 968}, "1417": {x: 1677, y: 1106},
+    "1505": {x: 552, y: 1605}, "1506": {x: 692, y: 1600}, "1507": {x: 805, y: 1591}, "1605": {x: 770, y: 1682}, "1606": {x: 888, y: 1682}, "1516": {x: 1484, y: 1594},
+    "1508": {x: 924, y: 1580}, "1510": {x: 1009, y: 1580}, "1511": {x: 1084, y: 1580},  "1515": {x: 1412, y: 1596}, "1607": {x: 1018, y: 1682},
+    "1512": {x: 1194, y: 1467}, "1608": {x: 1382, y: 1685},
+    "1517": {x: 1533, y: 1649}, "1519": {x: 1704, y: 1627}
 };
 
 const namesMap = {
@@ -167,10 +119,8 @@ function getTurnDirection(nodeA, nodeB, nodeC) {
     
     let crossProduct = (AB.x * BC.y) - (AB.y * BC.x);
 
-    // Em SVG, o eixo Y cresce para BAIXO, então o sinal do produto vetorial é invertido
-    // em relação ao sistema cartesiano padrão.
-    if (crossProduct > 0) return "esquerda";
-    if (crossProduct < 0) return "direita";
+    if (crossProduct > 0) return "direita";
+    if (crossProduct < 0) return "esquerda";
     return "em frente";
 }
 
